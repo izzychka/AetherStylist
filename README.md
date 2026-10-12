@@ -5,8 +5,8 @@
   <p>
     <img alt="C#" src="https://img.shields.io/badge/C%23-9B74CE?style=for-the-badge&logo=csharp&logoColor=white" />
     <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-BA8DD6?style=for-the-badge&logo=dotnet&logoColor=white" />
-    <img alt="FFXIV" src="https://img.shields.io/badge/FFXIV-Dalamud_Plugin_Planned-E99ABC?style=for-the-badge" />
-    <img alt="Status" src="https://img.shields.io/badge/status-early_prototype-E69DBE?style=for-the-badge&labelColor=7F557D" />
+    <img alt="FFXIV" src="https://img.shields.io/badge/FFXIV-Dalamud_API_15-E99ABC?style=for-the-badge" />
+    <img alt="Status" src="https://img.shields.io/badge/status-milestone_2-E69DBE?style=for-the-badge&labelColor=7F557D" />
   </p>
   <p>
     <a href="#-the-idea">The idea</a> ·
@@ -31,7 +31,7 @@ The aim isn't to pick random equipment with matching names. It's to suggest outf
 
 `Choose a piece` → `Lock it` → `Pick an aesthetic` → `Explore matching pieces` → `Save your glam` ♡
 
-*AetherStylist is currently a C# engine prototype, not a working in-game plugin. The workflow above is our goal.*
+*AetherStylist includes a standalone C# engine prototype and a minimal Dalamud API 15 plugin. The plugin currently shows a welcome window and a fictional placeholder item selector; the workflow above is our goal.*
 
 ## ✨ Features
 
@@ -84,7 +84,17 @@ dotnet run --project tests/AetherStylist.Specs
 
 The demo begins with a fictional **Midnight Oversized Jacket** (`ID 1001`) and an `alt` aesthetic. Edit the `OutfitRequest` in `src/AetherStylist.Demo/Program.cs` to experiment with different combinations.
 
-> These are console-based checks, **not** a `dotnet test` test suite yet. This prototype has not been independently compiled and verified by the original scaffold author; please build and test locally.
+> These are console-based checks, **not** a `dotnet test` test suite yet.
+
+### Dalamud plugin (Milestone 2)
+
+On Windows, with the .NET 10 SDK and Dalamud API 15 development assemblies available:
+
+```powershell
+dotnet build AetherStylist.sln -c Debug
+```
+
+The plugin DLL is `src/AetherStylist.Plugin/bin/x64/Debug/AetherStylist.Plugin.dll`. Use `/aetherstylist` to toggle **AetherStylist ♡** after enabling it as a dev plugin. See the [build and local loading guide](PluginIntegration/README.md) for prerequisites, exact steps and an explanation of the C# implementation. Compilation does not replace testing inside the game.
 
 ## 📁 Project structure
 
@@ -92,15 +102,17 @@ The demo begins with a fictional **Midnight Oversized Jacket** (`ID 1001`) and a
 AetherStylist/
 ├── src/
 │   ├── AetherStylist.Core/       # Data models + recommendation engine
-│   └── AetherStylist.Demo/       # Console demo + fictional item catalogue
+│   ├── AetherStylist.Demo/       # Console demo + fictional item catalogue
+│   └── AetherStylist.Plugin/     # Dalamud API 15 entry point + ImGui window
 ├── tests/
 │   └── AetherStylist.Specs/      # Executable checks for engine behaviour
-├── PluginIntegration/           # Notes for the future Dalamud integration
+├── PluginIntegration/           # Build/loading guide + implementation walkthrough
+├── AetherStylist.sln            # Builds all four projects
 ├── NOTICE.md
 └── README.md                    # You're here! ♡
 ```
 
-**Core first, game integration second.** The future plugin will translate FFXIV item data into the core's models, rather than baking game APIs into the matching algorithm.
+The plugin references Core as a separate library. A future adapter will translate FFXIV item data into the core's models; the matching algorithm remains independent of game APIs.
 
 ## 🗺️ Roadmap
 
@@ -108,8 +120,9 @@ AetherStylist/
 - [x] Implement initial colour, aesthetic, silhouette and material scoring
 - [x] Add multi-outfit generation with beam search
 - [x] Create a fictional catalogue and console checks
-- [ ] Compile, run and refine the prototype locally
-- [ ] Scaffold a real Dalamud plugin with an ImGui window
+- [x] Compile and run the prototype locally
+- [x] Scaffold and compile a real Dalamud plugin with an ImGui window
+- [ ] Verify the plugin inside FFXIV
 - [ ] Load and search actual FFXIV equipment data with Lumina
 - [ ] Validate glamour compatibility and equipment restrictions
 - [ ] Support locked pieces and interactive outfit recommendations in-game
@@ -121,7 +134,7 @@ AetherStylist/
 
 ## 🧵 Built with
 
-**C# · .NET 10 · JSON ·** planned **Dalamud / ImGui / Lumina**
+**C# · .NET 10 · JSON · Dalamud / ImGui ·** planned **Lumina**
 
 Useful references: [Dalamud getting started](https://dalamud.dev/plugin-development/getting-started/) · [SamplePlugin](https://github.com/goatcorp/SamplePlugin) · [Dalamud AI use policy](https://dalamud.dev/plugin-publishing/ai-policy/)
 
