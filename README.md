@@ -129,7 +129,6 @@ Useful references: [Dalamud getting started](https://dalamud.dev/plugin-developm
 
 This project is a personal learning project and is **not affiliated with Square Enix, Final Fantasy XIV, Dalamud, XIVLauncher, Glamourer or Penumbra**. No FFXIV game assets are included in the starter catalogue.
 
-The initial prototype scaffold was created with AI assistance. Contributions and releases should be reviewed, understood and tested by a human maintainer, with appropriate disclosure when required by plugin-publishing policies.
 
 <div align="center">
 
