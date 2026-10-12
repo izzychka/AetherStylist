@@ -1,108 +1,140 @@
-# AetherStylist ♡ — C# recommendation-engine starter
+<div align="center">
+  <h1>✧ AetherStylist ♡</h1>
+  <p><strong>Build a whole glamour around the pieces you love.</strong></p>
+  <p><em>A little wardrobe brain for Eorzea.</em> ✨</p>
+  <p>
+    <img alt="C#" src="https://img.shields.io/badge/C%23-9B74CE?style=for-the-badge&logo=csharp&logoColor=white" />
+    <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-BA8DD6?style=for-the-badge&logo=dotnet&logoColor=white" />
+    <img alt="FFXIV" src="https://img.shields.io/badge/FFXIV-Dalamud_Plugin_Planned-E99ABC?style=for-the-badge" />
+    <img alt="Status" src="https://img.shields.io/badge/status-early_prototype-E69DBE?style=for-the-badge&labelColor=7F557D" />
+  </p>
+  <p>
+    <a href="#-the-idea">The idea</a> ·
+    <a href="#-features">Features</a> ·
+    <a href="#-getting-started">Getting started</a> ·
+    <a href="#-roadmap">Roadmap</a>
+  </p>
+</div>
+---
 
-A **headless, testable first implementation** of *Build Around This* for a future FFXIV Dalamud plugin.
+## ♡ The idea
 
-> **Status:** This archive is not yet an installable Dalamud plugin. It contains a real C# recommendation engine, a console demonstration, example catalogue records, and dependency-free executable checks. The item names and IDs in the demo are **fictional**, not FFXIV data. The engine has not been compiled in the authoring environment (which did not have the .NET SDK); build/test on your machine.
+Ever found the *perfect* jacket, boots or skirt in **Final Fantasy XIV**, only to spend the next hour trying to make the rest of your glamour work?
 
-## Quick start
+**AetherStylist** is an in-development glamour recommendation assistant built around one simple interaction:
 
-Install the **.NET 10 SDK** (current Dalamud API 15 uses .NET 10). From the archive root:
+> **✧ Build Around This** — choose one or two favourite pieces, lock them in place, and discover the rest of your outfit.
+
+The aim isn't to pick random equipment with matching names. It's to suggest outfits that feel intentional, combining **aesthetic tags** with **visual compatibility** and, eventually, **real character and glamour restrictions**.
+
+### The dream workflow
+
+`Choose a piece` → `Lock it` → `Pick an aesthetic` → `Explore matching pieces` → `Save your glam` ♡
+
+*AetherStylist is currently a C# engine prototype, not a working in-game plugin. The workflow above is our goal.*
+
+## ✨ Features
+
+| Available in the prototype | Planned for the Dalamud plugin |
+| --- | --- |
+| ♡ Lock starting items | 🔎 Search real FFXIV equipment |
+| 🎀 Match against aesthetic tags | 🪞 Preview glamour combinations |
+| 🎨 Score colour relationships | 🧵 Use richer visual metadata from item renders |
+| ✂️ Balance garment silhouettes | 🧍 Validate race, gender, job and level restrictions |
+| 🪡 Consider material pairings | 💾 Save and revisit your outfits |
+| 🌸 Generate multiple complete looks via beam search | 🎨 Recommend dyes and palettes |
+| 📝 Explain why items match | 🔗 Explore Glamourer / Penumbra integrations |
+
+The initial engine uses **manually tagged, fictional clothes**. It does **not** yet read real FFXIV items, access your wardrobe or change your character's appearance.
+
+## 🧠 How the matching works
+
+The recommendation engine is written as a **standalone C# library**, independent of Dalamud, so it's easy to test and improve.
+
+For each candidate piece, it calculates a weighted *heuristic* score:
+
+| Signal | Weight | What it asks |
+| --- | ---: | --- |
+| 🎀 **Aesthetic** | **40%** | Does this fit the style you've chosen? |
+| 🎨 **Colour** | **25%** | Does the palette work with the locked pieces? |
+| ✂️ **Silhouette** | **20%** | Do the shapes balance each other? |
+| 🪡 **Material** | **15%** | Do the textures and finishes work together? |
+
+It then uses **beam search** to explore several complete outfits instead of choosing each slot independently. Locked pieces stay locked, and suggested items come with a short explanation.
+
+> **A note on scores:** A “92/100 match” is a configurable style heuristic, **not** an AI confidence score or an objective measure of fashion. Real visual analysis is a future milestone.
+
+## 💻 Getting started
+
+### Requirements
+
+- **.NET 10 SDK**
+- A C# editor such as **VS Code** or **Visual Studio**
+- No FFXIV installation required to run the current demo
+
+Clone your repository (or open the extracted project folder), then run:
 
 ```bash
+# Try the fictional-item outfit builder
 dotnet run --project src/AetherStylist.Demo
+
+# Run the current dependency-free executable checks
 dotnet run --project tests/AetherStylist.Specs
 ```
 
-In the demo, the starting item is ID `1001`, *Midnight Oversized Jacket*, with a chosen `alt` style. Change `OutfitRequest` in `src/AetherStylist.Demo/Program.cs`, then rerun it.
+The demo begins with a fictional **Midnight Oversized Jacket** (`ID 1001`) and an `alt` aesthetic. Edit the `OutfitRequest` in `src/AetherStylist.Demo/Program.cs` to experiment with different combinations.
 
-### Project map
+> These are console-based checks, **not** a `dotnet test` test suite yet. This prototype has not been independently compiled and verified by the original scaffold author; please build and test locally.
 
-```
-AetherStylist-starter/
+## 📁 Project structure
+
+```text
+AetherStylist/
 ├── src/
-│   ├── AetherStylist.Core/          # Plugin-agnostic models, matcher and outfit search
-│   │   ├── Models.cs
-│   │   ├── ColourHarmony.cs
-│   │   └── RecommendationEngine.cs
-│   └── AetherStylist.Demo/          # Runs without Dalamud / game installation
-│       ├── Program.cs
-│       └── data/catalogue.json     # Fictional, hand-tagged sample pieces
-├── tests/AetherStylist.Specs/      # No-NuGet console checks
-├── PluginIntegration/              # Manual integration guide and UI example
-└── README.md
+│   ├── AetherStylist.Core/       # Data models + recommendation engine
+│   └── AetherStylist.Demo/       # Console demo + fictional item catalogue
+├── tests/
+│   └── AetherStylist.Specs/      # Executable checks for engine behaviour
+├── PluginIntegration/           # Notes for the future Dalamud integration
+├── NOTICE.md
+└── README.md                    # You're here! ♡
 ```
 
-## What v0.1 can do
+**Core first, game integration second.** The future plugin will translate FFXIV item data into the core's models, rather than baking game APIs into the matching algorithm.
 
-- Lock one or two pieces and keep them in the outfit.
-- Recommend individual slots or generate full five-slot outfits using **beam search**.
-- Score aesthetic tags (40%), colour harmony (25%), top/bottom silhouette balance (20%), materials (15%).
-- Use job and owned-only filters and return human-readable recommendation reasons.
-- Choose automatic, monochromatic or complementary colour handling.
-- Keep all outfit decisions deterministic and testable.
+## 🗺️ Roadmap
 
-### What it **doesn't** do yet
+- [x] Define the item and outfit models
+- [x] Implement initial colour, aesthetic, silhouette and material scoring
+- [x] Add multi-outfit generation with beam search
+- [x] Create a fictional catalogue and console checks
+- [ ] Compile, run and refine the prototype locally
+- [ ] Scaffold a real Dalamud plugin with an ImGui window
+- [ ] Load and search actual FFXIV equipment data with Lumina
+- [ ] Validate glamour compatibility and equipment restrictions
+- [ ] Support locked pieces and interactive outfit recommendations in-game
+- [ ] Save outfits and user preferences
+- [ ] Develop real image-derived visual features
+- [ ] Explore dye palettes, previews and optional integrations
 
-- No real FFXIV items, character inventory state, job/race/gender validation, item preview or live appearance manipulation.
-- No automatic screenshot feature extraction, true perceptual matching, AI model, or Penumbra integration.
-- No persistence or finished ImGui interface.
-- Doesn't understand multi-slot glamour items, dye channels, item-model gender variants, armour appearance overlap, and some special equipment restrictions. These need to be handled **before** recommending real gear.
-- Scores are **heuristics**, never a probability of fashion compatibility. The seed labels are manually curated.
+*Early-stage roadmap — priorities will change as we learn what works.*
 
-## Design principles
+## 🧵 Built with
 
-**1. Core engine is completely unaware of the game.** The plugin adapter will turn data from Lumina and local style overrides into `GlamourItem` records. This design allows the same engine to power an ImGui UI, an offline analysis tool, and tests.
+**C# · .NET 10 · JSON ·** planned **Dalamud / ImGui / Lumina**
 
-**2. Hard filters happen before scoring.** A beautiful piece isn't useful if it cannot be glamoured by the character. `AllowedJobs` and `IsOwned` are simplified demonstration fields; production will need a full availability/character eligibility service that verifies level, job, race/gender, special appearance cases and glamour rules. Don't assume the game sheets already contain style tags or fabric colours.
+Useful references: [Dalamud getting started](https://dalamud.dev/plugin-development/getting-started/) · [SamplePlugin](https://github.com/goatcorp/SamplePlugin) · [Dalamud AI use policy](https://dalamud.dev/plugin-publishing/ai-policy/)
 
-**3. Visual metadata is an extensible annotation layer.** Later this could contain silhouettes, colour palettes from rendered thumbnails, embeddings, silhouette contrast, and user-provided tags. In v0.1, `RgbColor`, `Silhouette`, `Material`, and `Styles` are authored manually.
+## ♡ Notes & credits
 
-**4. User intent dominates recommendations.** Locked pieces never change. We should eventually add reject/like feedback, diversity, and user-defined weights.
+This project is a personal learning project and is **not affiliated with Square Enix, Final Fantasy XIV, Dalamud, XIVLauncher, Glamourer or Penumbra**. No FFXIV game assets are included in the starter catalogue.
 
-## Scoring
+The initial prototype scaffold was created with AI assistance. Contributions and releases should be reviewed, understood and tested by a human maintainer, with appropriate disclosure when required by plugin-publishing policies.
 
-Each proposed item gets a breakdown (0–1):
+<div align="center">
 
-```
-score = 0.40 * aesthetic_match
-      + 0.25 * colour_harmony
-      + 0.20 * silhouette_balance
-      + 0.15 * material_match
-```
+---
 
-Aesthetic = 80% match to requested style and 20% tag overlap with already selected pieces.
+*Made with love, a lot of glamour plates, and probably too much time spent picking boots.* ♡
 
-Colour = average colour harmony with selected pieces. Low-saturation neutrals work with most colours; Auto allows similar/analogous/complementary hues; other modes explicitly constrain the hue relationship. This is a deliberately simple HSL heuristic.
-
-Silhouette = checks the body/legs pairing; e.g., loose top with fitted bottoms receives a bonus, loose top with loose bottoms receives a penalty. Other slot combinations are neutral for now.
-
-Material = compatible basic material pairing bonus. When no other item is selected, each visual comparison starts with a neutral baseline.
-
-For each missing slot, beam search expands the best partial outfits with top candidates instead of choosing each item independently. Suggestions are *not* ranked by image ML in this version.
-
-## Development roadmap
-
-**Milestone A — core (this ZIP):** Testable C# engine + mocked catalogue + style and colour rules.
-
-**Milestone B — actual catalogue:** Start from `goatcorp/SamplePlugin`. Use current `IDataManager.GetExcelSheet<Item>()` to read real item IDs, names and equipment categories. Filter glamour-eligible wearable items, skip multi-slot until modelled correctly. Join with a `style-overrides.json` file keyed by item ID. Render a searchable ImGui item list.
-
-**Milestone C — real outfit building:** Correct legality checks, locked slots, pick job/race/gender, browse ranked suggestions and save outfits to Dalamud configuration.
-
-**Milestone D — visual matching:** Build rendered preview images or verified item sprites, derive colours/silhouettes from images, compare appearance embeddings or human tags. This deserves its own data-collection and evaluation pipeline; do not infer aesthetics from item names.
-
-**Milestone E — integrations:** Glamourer preview via a supported IPC API, community lookbooks, Penumbra metadata support, two dye-channel palettes.
-
-### An actual first coding exercise
-
-In `RecommendationEngine.cs`, improve `ShapeScore`: make the result sensitive to the **selected aesthetic**. Streetwear may welcome loose-on-loose silhouettes, while elegant outfits might favour structured/flowing pairings. Add three tests showing why those ratings changed. This is a meaningful improvement you can implement without touching Dalamud.
-
-## Dalamud publication note
-
-Goatcorp's official repository requires genuinely human-led ownership of the code, personal testing and disclosure of substantial AI help. Entirely AI-generated submissions are rejected. Before publishing, review the current policy at https://dalamud.dev/plugin-publishing/ai-policy/ and the restriction guidelines. FFXIV/Dalamud plugin use is not officially supported by Square Enix.
-
-## References
-
-- https://dalamud.dev/plugin-development/getting-started/
-- https://dalamud.dev/api/Dalamud.Plugin.Services/Interfaces/IDataManager/
-- https://github.com/goatcorp/SamplePlugin
-- https://dalamud.dev/versions/v15/
+</div>
